@@ -65,3 +65,39 @@ class AuthTestCase(TestCase):
         with self.settings(LOGIN_REDIRECT_URL="/test/"):
             response = self.client.post(f'{login_url}?next=/', data=credentials)
             self.assertRedirects(response, '/')
+
+
+    def test_redirects_to_login_page_after_logout(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        credentials = {
+            "username": "testuser",
+            "password": "testpassword"
+        }
+
+        login_url = reverse('accounts:login')
+        logout_url = reverse('accounts:logout')
+        response = self.client.post(login_url, data=credentials)
+        self.assertRedirects(response, "/")
+        logout_response = self.client.post(logout_url)
+        self.assertRedirects(logout_response, login_url)
+        home_response = self.client.get("/")
+        self.assertRedirects(home_response, f'{login_url}?next=/')
+
+
+    def test_get_405_to_try_access_logout_route(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        credentials = {
+            "username": "testuser",
+            "password": "testpassword"
+        }
+        login_url = reverse('accounts:login')
+        logout_url = reverse('accounts:logout')
+        self.client.post(login_url, data=credentials)
+        response = self.client.get(logout_url)
+        self.assertEqual(response.status_code, 405)
+        home_response = self.client.get("/")
+        self.assertEqual(home_response.status_code, 200)

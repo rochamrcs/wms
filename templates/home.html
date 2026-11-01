@@ -6,6 +6,14 @@
     <title>WMS</title>
 </head>
 <body>
+    <div>
+        <form method="post"
+        action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+  
     <h1>Bem-vindo(a)! <b>{{ user.username }}</b></h1>
 </body>
 </html>
