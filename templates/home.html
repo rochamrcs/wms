@@ -12,6 +12,8 @@
             {% csrf_token %}
             <button type="submit">Logout</button>
         </form>
+
+        <a href="{% url 'products:product_list' %}">Produtos</a>
     </div>
   
     <h1>Bem-vindo(a)! <b>{{ user.username }}</b></h1>
