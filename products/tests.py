@@ -132,3 +132,21 @@ class ProductTestCase(TestCase):
         login_url = reverse('accounts:login')
         response = self.client.get(product_url)
         self.assertRedirects(response, f'{login_url}?next={product_url}')
+
+
+    def test_authenticated_user_can_change_product_status(self):
+
+        user = User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+        )
+        self.client.force_login(user)
+
+        product = Product.objects.create(name='Folha A4', code='CDE-900', status=True)
+        product_list = reverse('products:product_list')
+     
+        product_url = reverse('products:product_change_status', kwargs={"pk": product.pk})
+        response = self.client.post(product_url)
+        self.assertEqual(Product.objects.get(pk=product.pk).status, False)
+        self.assertRedirects(response, product_list)
+    

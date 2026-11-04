@@ -1,5 +1,6 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from .forms import ProductForm
 from .models import Product
 
@@ -28,3 +29,13 @@ def product_list(request):
         }
 
     return render(request, 'products/product_list.html', context=context)
+
+
+@login_required()
+@require_POST
+def product_change_status(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    product.status = not product.status
+    product.save(update_fields=["status"])
+
+    return redirect("products:product_list")

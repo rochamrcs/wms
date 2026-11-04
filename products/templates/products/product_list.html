@@ -4,12 +4,25 @@
     <tr>
         <th>Código</th>
         <th>Nome</th>
+        <th>Status</th>
+        <th>Edit</th>
     </tr>
 
     {% for product in product_list %}
         <tr>
             <td>{{ product.code }}</td>
             <td>{{ product.name }}</td>
+            {% if product.status == True %}
+                <td>Ativo</td>
+            {% else %}
+                <td>Inativo</td>
+            {% endif %}
+            <td>
+                <form method="post" action="{% url 'products:product_change_status' product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Alterar</button>
+                </form>
+            </td>
         </tr>
     {% empty %}
         <tr>
