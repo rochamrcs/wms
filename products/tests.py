@@ -149,4 +149,42 @@ class ProductTestCase(TestCase):
         response = self.client.post(product_url)
         self.assertEqual(Product.objects.get(pk=product.pk).status, False)
         self.assertRedirects(response, product_list)
-    
+
+
+    def test_product_status_change_rejects_get(self):
+
+        user = User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+        )
+        self.client.force_login(user)
+
+        product = Product.objects.create(name='Folha A4', code='CDE-900', status=True)
+
+        product_url = reverse('products:product_change_status', kwargs={"pk": product.pk})
+        response = self.client.get(product_url)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(Product.objects.get(pk=product.pk).status, True)
+
+
+    def test_product_status_change_returns_404_for_missing_product(self):
+
+        user = User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+        )
+        self.client.force_login(user)
+
+        product_url = reverse('products:product_change_status', kwargs={"pk": 2})
+        response = self.client.post(product_url)
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_unauthenticated_user_cant_change_product_status(self):
+
+        product = Product.objects.create(name='Folha A4', code='CDE-900', status=True)
+     
+        product_url = reverse('products:product_change_status', kwargs={"pk": product.pk})
+        login_url = reverse('accounts:login')
+        response = self.client.post(product_url)
+        self.assertRedirects(response, f'{login_url}?next={product_url}')
