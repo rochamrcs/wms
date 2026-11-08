@@ -1,0 +1,5 @@
+<form method="post" action="{% url 'warehouses:new_address' %}">
+    {% csrf_token %}
+    {{ new_address.as_p }}
+    <button type="submit">Cadastrar</button>
+</form>

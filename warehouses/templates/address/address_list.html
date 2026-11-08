@@ -1,0 +1,37 @@
+<a href="{% url 'home' %}">Inicio</a>
+<a href="{% url 'warehouses:new_address' %}">Nova Posição</a>
+
+<table>
+    <tr>
+        <th>Endereço</th>
+        <th>Armazem</th>
+        <th>Status</th>
+        <th>Capacidade</th>
+        <th>UMB</th>
+    </tr>
+
+    {% for address in address_list %}
+        <tr>
+            <td>{{ address.address }}</td>
+            <td>{{ address.storage }}</td>
+
+            {% if address.is_available == True %}
+                <td>Disponível</td>
+            {% else %}
+                <td>Bloqueado</td>
+            {% endif %}
+
+            {% if address.capacity_unit == "PL"%}
+                <td>{{ address.capacity|floatformat:"0" }}</td>
+            {% else %}
+                <td>{{ address.capacity }}</td>
+            {% endif %}
+
+            <td>{{ address.capacity_unit}}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">Nenhum endereço cadastrado.</td>
+        </tr>
+    {% endfor %}
+</table>

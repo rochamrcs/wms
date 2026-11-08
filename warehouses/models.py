@@ -12,6 +12,7 @@ class UnitOfMeasure(models.TextChoices):
 
 class Storage(models.Model):
     name = models.CharField(max_length=20, unique=True, blank=False, null=False)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -20,6 +21,7 @@ class Storage(models.Model):
 
 class LocationType(models.Model):
     name = models.CharField(max_length=20, unique=True)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

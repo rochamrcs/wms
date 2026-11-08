@@ -1,3 +1,6 @@
 from django.contrib import admin
+from warehouses.models import Storage, LocationType
 
-# Register your models here.
+
+admin.site.register(Storage)
+admin.site.register(LocationType)
